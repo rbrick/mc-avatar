@@ -9,8 +9,8 @@ Installation
 
 ## Dependencies
  This project depends on two libraries:
-    * [Martini](http://www.github.com/go-martini/martini)
-    * [Imaging](http://www.github.com/disintegration/imaging)
+* [Martini](http://www.github.com/go-martini/martini)
+* [Imaging](http://www.github.com/disintegration/imaging)
 follow the installation guides on the respective repositories.
 
 If all goes well you will have all the dependencies needed to build the project:
