@@ -4,7 +4,6 @@ import (
   "log"
   "fmt"
   "net/http"
-  "github.com/rbrick/mc-avatar"
 )
 
 func main() {
@@ -16,7 +15,7 @@ func main() {
         } else if len(name) > 16 {
           fmt.Fprintln(w, "name to long!")
         } else {
-           skin, err := mc.GetSkin(name)
+           skin, err := GetSkin(name)
 
            if err != nil {
               log.Fatal(err)
