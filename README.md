@@ -1,4 +1,4 @@
 mc-avatar
 =========
 
-just another avatar service for minecraft
+A martini application for minecraft avatars! Functional but needs improvements :)

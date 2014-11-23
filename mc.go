@@ -22,22 +22,6 @@ var mcurl string = "http://skins.minecraft.net/MinecraftSkins/%s.png"
 Returns a Skin.
 */
 func GetSkin(userName string) (skin *Skin, err error) {
-
-  if _, err := os.Stat(userName + ".png"); err == nil {
-    reader, err := os.Open(userName + ".png")
-    if err != nil {
-      return nil, err
-    }
-    defer reader.Close()
-
-    img1, err2 := png.Decode(reader)
-
-    if err2 != nil {
-      return nil, err2
-    }
-    return &Skin{Img: img1, Name: userName}, nil
-  }
-
   url := fmt.Sprintf(mcurl, userName)
   resp, err := http.Get(url) // Gets the data from the url
 
