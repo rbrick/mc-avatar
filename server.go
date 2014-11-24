@@ -12,12 +12,18 @@ import (
 func main() {
     m := martini.Classic()
 
-    m.Get("/:player", func(w http.ResponseWriter,r *http.Request,params martini.Params) {
+    m.Get("/", func() {
+        fmt.Println("Hello World!\nappend /face/<playername> or /face/<size>/<playername>\nto get the face you want!")
+      })
+
+    m.Get("/face/:player", func(w http.ResponseWriter,r *http.Request,params martini.Params) {
       name := params["player"]
       if name == "" {
-        fmt.Fprintln(w,"name must not be empty!")
+         fmt.Fprintln(w,"name must not be empty!")
+         //name = "steve"
         } else if len(name) > 16 {
-          fmt.Fprintln(w,"name to long!")
+           fmt.Fprintln(w,"name to long!")
+//          name = "steve"
           } else {
             skin, err := GetSkin(name)
 
@@ -26,7 +32,7 @@ func main() {
               return
             }
 
-            img := skin.GetFace(64)
+            img := skin.GetFace(128)
 
             if img == nil {
               fmt.Fprintln(w,"image not found!")
@@ -45,24 +51,25 @@ func main() {
           }
     })
 
-    m.Get("/:size/:player", func(w http.ResponseWriter,r *http.Request,params martini.Params) {
+    m.Get("/face/:size/:player", func(w http.ResponseWriter,r *http.Request,params martini.Params) {
 
      size, err := strconv.Atoi(params["size"])
 
         // something went wrong with the request
       if err != nil {
-         size = 64
+         size = 128
       }
 
       if size > 512 || size <= 10 {
-        size = 64
+        size = 128
       }
 
       name := params["player"]
       if name == "" {
-        fmt.Fprintln(w, "name must not be empty!")
+         fmt.Fprintln(w, "name must not be empty!")
         } else if len(name) > 16 {
           fmt.Fprintln(w, "name to long!")
+
           } else {
             skin, err := GetSkin(name)
 

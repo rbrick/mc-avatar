@@ -6,7 +6,6 @@ import (
   "net/http"
   "fmt"
   "image/draw"
-  "errors"
   "github.com/disintegration/imaging"
 )
 
@@ -21,15 +20,38 @@ var mcurl string = "http://skins.minecraft.net/MinecraftSkins/%s.png"
 Returns a Skin.
 */
 func GetSkin(userName string) (skin *Skin, err error) {
+
   url := fmt.Sprintf(mcurl, userName)
+
+  if len(userName) == 1 {
+    url = "https://minecraft.net/images/steve.png"
+    resp1, _ := http.Get(url)
+
+    img,_ := png.Decode(resp1.Body)
+
+    return &Skin{Img: img, Name: "Steve"}, nil
+  }
+
   resp, err := http.Get(url) // Gets the data from the url
 
+
+
   if err != nil {
-    return nil, err
+     url = "https://minecraft.net/images/steve.png"
+     resp1, _ := http.Get(url)
+
+     img,_ := png.Decode(resp1.Body)
+
+    return &Skin{Img: img, Name: "Steve"}, nil
   }
 
   if resp.Header.Get("Content-Type") != "image/png" || resp.StatusCode != 200 {
-     return nil, errors.New("An internal error has occurred.")
+    url = "https://minecraft.net/images/steve.png"
+    resp1, _ := http.Get(url)
+
+    img,_ := png.Decode(resp1.Body)
+
+    return &Skin{Img: img, Name: "Steve"}, nil
   }
 
   img, err1 := png.Decode(resp.Body)
@@ -44,9 +66,6 @@ func GetSkin(userName string) (skin *Skin, err error) {
 
 // Size -> ratio so 1:1 is 8x8 2:1 16x16
 func (skin *Skin) GetFace(size int) image.Image {
-  if skin.Img == nil {
-    return nil
-  }
 
   m := image.NewRGBA(image.Rect(8,8,16,16))
 
