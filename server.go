@@ -6,6 +6,7 @@ import (
   "github.com/go-martini/martini"
   "strconv"
   "fmt"
+  "image/png"
 )
 
 func main() {
@@ -21,16 +22,26 @@ func main() {
             skin, err := GetSkin(name)
 
             if err != nil {
-              log.Fatal(err)
+              fmt.Fprintln(w,"An internal error has occurred!")
+              return
             }
 
             img := skin.GetFace(64)
 
             if img == nil {
               fmt.Fprintln(w,"image not found!")
+              return
             }
 
-            http.ServeFile(w,r, name + "_face.png")
+            w.Header().Set("Content-Type", "image/jpeg")
+
+            err1 := png.Encode(w, img)
+
+            if err1 != nil {
+              log.Fatal(err1)
+            }
+
+
           }
     })
 
@@ -65,7 +76,13 @@ func main() {
               fmt.Fprintln(w,"image not found!")
             }
 
-            http.ServeFile(w,r, name + "_face.png")
+            w.Header().Set("Content-Type", "image/jpeg")
+
+            err1 := png.Encode(w, img)
+
+            if err1 != nil {
+              log.Fatal(err1)
+            }
           }
       })
 

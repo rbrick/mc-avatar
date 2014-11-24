@@ -5,9 +5,8 @@ import (
   "image/png"
   "net/http"
   "fmt"
-  "os"
-  "log"
   "image/draw"
+  "errors"
   "github.com/disintegration/imaging"
 )
 
@@ -26,14 +25,17 @@ func GetSkin(userName string) (skin *Skin, err error) {
   resp, err := http.Get(url) // Gets the data from the url
 
   if err != nil {
-    return
+    return nil, err
   }
 
+  if resp.Header.Get("Content-Type") != "image/png" || resp.StatusCode != 200 {
+     return nil, errors.New("An internal error has occurred.")
+  }
 
   img, err1 := png.Decode(resp.Body)
 
   if err1 != nil {
-    return
+    return nil, err
   }
 
   return &Skin{Img: img, Name: userName}, nil
@@ -42,6 +44,10 @@ func GetSkin(userName string) (skin *Skin, err error) {
 
 // Size -> ratio so 1:1 is 8x8 2:1 16x16
 func (skin *Skin) GetFace(size int) image.Image {
+  if skin.Img == nil {
+    return nil
+  }
+
   m := image.NewRGBA(image.Rect(8,8,16,16))
 
   draw.Draw(m, m.Bounds(), skin.Img, image.Point{0,0}, draw.Src)
@@ -54,16 +60,5 @@ func (skin *Skin) GetFace(size int) image.Image {
 
   rimg := imaging.Resize(m, size, 0, imaging.NearestNeighbor)
 
-  newImg, _ := os.Create(skin.Name + "_face.png")
-
-  defer newImg.Close()
-
-
-
-  err := png.Encode(newImg, rimg)
-
-  if err != nil {
-    log.Fatal(err)
-  }
-  return m
+  return rimg
 }
